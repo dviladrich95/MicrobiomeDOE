@@ -15,9 +15,11 @@ dietswap@otu_table@.Data[1:10,1:7]
 
 # get the metadata (= variables associated to each sample, e.g. sampleID, diet, collection time point, sex, nationality etc.) from each samples
 
-metadata <- as.data.frame(sample_data(dietswap))
+metadata <- data.frame(sample_data(dietswap))
+class(metadata)  # Should return "data.frame"
 
 # correction line, in order to tell R that the columns timepoint and timepoint.within.group are categorical variables and not numerical
+library(dplyr)
 metadata <- metadata %>%
 mutate(
 timepoint = as.factor(timepoint),
@@ -31,8 +33,9 @@ summary(metadata)
 diet <- psmelt(dietswap)
 
 # visualize data, e.g. the percentage of Afroamericans (AFR) or American (AAM) from the sample being obese, overweight or lean
-plot_frequencies(x=sample_data(dietswap),
+freq_plot <- plot_frequencies(x=sample_data(dietswap),
 Groups="bmi_group", Factor="nationality")
+ggsave("plots/frequency_plot.png", freq_plot, width=8, height=6)
 
 # filter out non-prevalent taxa from our samples (allow to only compare those taxa which are frequent within all samples)
 core_diet <- core(x=dietswap,
@@ -51,10 +54,11 @@ rich <- estimate_richness(core_diet, measures = c("Observed", "Shannon"))
 rich
 
 # plot the Shannon metrics according to bmi group categories. Plot richness already allows for calculating and plotting diversity indices. 
-plot_richness(core_diet, x="bmi_group", measures= c("Shannon")) +
+rich_plot <- plot_richness(core_diet, x="bmi_group", measures= c("Shannon")) +
 geom_boxplot() +
 theme_classic() +
 theme(strip.background = element_blank(), axis.text.x.bottom = element_text(angle = -90))
+ggsave("plots/richness_plot.png", rich_plot, width=8, height=6)
 
 #  Assess significance of differences in microbial diversity across bmi groups through statistical test
 ## convert richness data into a data frame for easier handling 
