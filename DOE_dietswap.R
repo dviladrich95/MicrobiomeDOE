@@ -83,3 +83,157 @@ p.adjust.method = "fdr"
 )
 wilcox_shannon
 savehistory("DOE_dietswap.R")
+# Create a PCoA plot: principal component analysis allows to visualize and explore patterns that explain our data through multivariate projection 
+# odinate the data 
+set.seed(100)
+ord <- ordinate(physeq = diet_log,
+method = "MDS",
+distance = "bray")
+
+# prepare eigenvalues to adjust axis
+evals <- ord$values$Eigenvalues
+# plot PCA
+plot_ordination(physeq = diet_log,
+ordination = ord,
+color = "nationality") +
+geom_point(size = 2) +
+labs(col = "Nationality") +
+coord_fixed(sqrt(evals[2]/evals[1]))
+
+## create a Microbial Abundance Plot: stacked barplots of relative species abundances in each sample group/community
+# transform data into relative abundances through the transform-function of the microbiome package
+diet_relav <- microbiome::transform(core_diet, "compositional")
+#check the transformation process
+diet_relav@otu_table@.Data[1:3,1:3]
+#filtering data based on label/condition (in our case nationality and bmi group)
+afr_lean <-  subset_samples(diet_relav, nationality == "AFR" & bmi_group == "lean")
+afr_over <-  subset_samples(diet_relav, nationality == "AFR" & bmi_group == "overweight")
+afr_obese <-  subset_samples(diet_relav, nationality == "AFR" & bmi_group == "obese")
+aam_lean <-  subset_samples(diet_relav, nationality == "AAM" & bmi_group == "lean")
+aam_over <-  subset_samples(diet_relav, nationality == "AAM" & bmi_group == "overweight")
+aam_obese <-  subset_samples(diet_relav, nationality == "AAM" & bmi_group == "obese")
+
+#Plot
+afr_lean <-  subset_samples(diet_relav, nationality == "AFR" & bmi_group == "lean")
+afr_over <-  subset_samples(diet_relav, nationality == "AFR" & bmi_group == "overweight")
+afr_obese <-  subset_samples(diet_relav, nationality == "AFR" & bmi_group == "obese")
+aam_lean <-  subset_samples(diet_relav, nationality == "AAM" & bmi_group == "lean")
+aam_over <-  subset_samples(diet_relav, nationality == "AAM" & bmi_group == "overweight")
+aam_obese <-  subset_samples(diet_relav, nationality == "AAM" & bmi_group == "obese")
+
+plot_composition(afr_lean,
+                 taxonomic.level="Genus",
+                 average_by="timepoint",
+                 otu.sort="abundance",
+                 x.label="timepoint")+
+  labs(x="Time point",
+       y="Abundance",
+       title="Native African-Lean")+
+  theme(axis.test.x=element_text(angle=0,
+                                 hjust=0.5
+  ))
+
+# Plot for Native African-Overweight
+plot_composition(afr_over,
+                 taxonomic.level = "Genus",
+                 average_by = "timepoint",
+                 otu.sort = "abundance",
+                 x.label = "timepoint") + 
+  labs(x = "Time point",
+       y = "Abundance",
+       title = "Native African-Overweight") + 
+  theme(axis.text.x = element_text(angle = 0, 
+                                   hjust = 0.5))
+
+# Native African-Lean Plot
+afr_lean_plot <- plot_composition(afr_lean,
+                       taxonomic.level = "Genus",
+                       average_by = "timepoint",
+                       otu.sort = "abundance",
+                       x.label = "timepoint") + 
+  labs(x = "Time point",
+       y = "Abundance",
+       title = "Native African-Lean") + 
+  theme(axis.text.x = element_text(angle = 0, 
+                                   hjust = 0.5))
+
+# Native African-Overweight Plot
+afr_over_plot <- plot_composition(afr_over,
+                       taxonomic.level = "Genus",
+                       average_by = "timepoint",
+                       otu.sort = "abundance",
+                       x.label = "timepoint") + 
+  labs(x = "Time point",
+       y = "Abundance",
+       title = "Native African-Overweight") + 
+  theme(axis.text.x = element_text(angle = 0, 
+                                   hjust = 0.5))
+
+# Native African-Obese Plot
+afr_obese_plot <- plot_composition(afr_obese,
+                       taxonomic.level = "Genus",
+                       average_by = "timepoint",
+                       otu.sort = "abundance",
+                       x.label = "timepoint") + 
+  labs(x = "Time point",
+       y = "Abundance",
+       title = "Native African-Obese") + 
+  theme(axis.text.x = element_text(angle = 0, 
+                                   hjust = 0.5))
+
+# African American-Lean Plot
+aam_lean_plot <- plot_composition(aam_lean,
+                       taxonomic.level = "Genus",
+                       average_by = "timepoint",
+                       otu.sort = "abundance",
+                       x.label = "timepoint") + 
+  labs(x = "Time point",
+       y = "Abundance",
+       title = "African American-Lean") + 
+  theme(axis.text.x = element_text(angle = 0, 
+                                   hjust = 0.5))
+
+# African American-Overweight Plot
+aam_over_plot <- plot_composition(aam_over,
+                       taxonomic.level = "Genus",
+                       average_by = "timepoint",
+                       otu.sort = "abundance",
+                       x.label = "timepoint") + 
+  labs(x = "Time point",
+       y = "Abundance",
+       title = "African American-Overweight") + 
+  theme(axis.text.x = element_text(angle = 0, 
+                                   hjust = 0.5))
+
+# African American-Obese Plot
+aam_obese_plot <- plot_composition(aam_obese,
+                       taxonomic.level = "Genus",
+                       average_by = "timepoint",
+                       otu.sort = "abundance",
+                       x.label = "timepoint") + 
+  labs(x = "Time point",
+       y = "Abundance",
+       title = "African American-Obese") + 
+  theme(axis.text.x = element_text(angle = 0, 
+                                   hjust = 0.5))
+
+# Save individual plots
+ggsave("plots/afr_lean.png", afr_lean_plot, width=8, height=6)
+ggsave("plots/afr_overweight.png", afr_over_plot, width=8, height=6)
+ggsave("plots/afr_obese.png", afr_obese_plot, width=8, height=6)
+ggsave("plots/aam_lean.png", aam_lean_plot, width=8, height=6)
+ggsave("plots/aam_overweight.png", aam_over_plot, width=8, height=6)
+ggsave("plots/aam_obese.png", aam_obese_plot, width=8, height=6)
+
+# Combine all plots into one figure
+combined_plot <- ggarrange(afr_lean_plot, afr_over_plot, afr_obese_plot, 
+                         aam_lean_plot, aam_over_plot, aam_obese_plot,
+                         ncol=2, nrow=3,
+                         common.legend = TRUE)
+
+# Save the combined plot
+ggsave("plots/combined_composition_plots.png", 
+       combined_plot, 
+       width=16, 
+       height=18)
+
