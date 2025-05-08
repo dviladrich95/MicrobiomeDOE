@@ -15,9 +15,11 @@ dietswap@otu_table@.Data[1:10,1:7]
 
 # get the metadata (= variables associated to each sample, e.g. sampleID, diet, collection time point, sex, nationality etc.) from each samples
 
-metadata <- as.data.frame(sample_data(dietswap))
+metadata <- data.frame(sample_data(dietswap))
+class(metadata)  # Should return "data.frame"
 
 # correction line, in order to tell R that the columns timepoint and timepoint.within.group are categorical variables and not numerical
+library(dplyr)
 metadata <- metadata %>%
 mutate(
 timepoint = as.factor(timepoint),
