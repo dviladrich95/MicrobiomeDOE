@@ -146,7 +146,7 @@ plot_composition(afr_over,
                                    hjust = 0.5))
 
 # Native African-Lean Plot
-p1 <- plot_composition(afr_lean,
+afr_lean_plot <- plot_composition(afr_lean,
                        taxonomic.level = "Genus",
                        average_by = "timepoint",
                        otu.sort = "abundance",
@@ -158,7 +158,7 @@ p1 <- plot_composition(afr_lean,
                                    hjust = 0.5))
 
 # Native African-Overweight Plot
-p2 <- plot_composition(afr_over,
+afr_over_plot <- plot_composition(afr_over,
                        taxonomic.level = "Genus",
                        average_by = "timepoint",
                        otu.sort = "abundance",
@@ -170,7 +170,7 @@ p2 <- plot_composition(afr_over,
                                    hjust = 0.5))
 
 # Native African-Obese Plot
-p3 <- plot_composition(afr_obese,
+afr_obese_plot <- plot_composition(afr_obese,
                        taxonomic.level = "Genus",
                        average_by = "timepoint",
                        otu.sort = "abundance",
@@ -182,7 +182,7 @@ p3 <- plot_composition(afr_obese,
                                    hjust = 0.5))
 
 # African American-Lean Plot
-p4 <- plot_composition(aam_lean,
+aam_lean_plot <- plot_composition(aam_lean,
                        taxonomic.level = "Genus",
                        average_by = "timepoint",
                        otu.sort = "abundance",
@@ -194,7 +194,7 @@ p4 <- plot_composition(aam_lean,
                                    hjust = 0.5))
 
 # African American-Overweight Plot
-p5 <- plot_composition(aam_over,
+aam_over_plot <- plot_composition(aam_over,
                        taxonomic.level = "Genus",
                        average_by = "timepoint",
                        otu.sort = "abundance",
@@ -206,7 +206,7 @@ p5 <- plot_composition(aam_over,
                                    hjust = 0.5))
 
 # African American-Obese Plot
-p6 <- plot_composition(aam_obese,
+aam_obese_plot <- plot_composition(aam_obese,
                        taxonomic.level = "Genus",
                        average_by = "timepoint",
                        otu.sort = "abundance",
@@ -216,4 +216,24 @@ p6 <- plot_composition(aam_obese,
        title = "African American-Obese") + 
   theme(axis.text.x = element_text(angle = 0, 
                                    hjust = 0.5))
+
+# Save individual plots
+ggsave("plots/afr_lean.png", afr_lean_plot, width=8, height=6)
+ggsave("plots/afr_overweight.png", afr_over_plot, width=8, height=6)
+ggsave("plots/afr_obese.png", afr_obese_plot, width=8, height=6)
+ggsave("plots/aam_lean.png", aam_lean_plot, width=8, height=6)
+ggsave("plots/aam_overweight.png", aam_over_plot, width=8, height=6)
+ggsave("plots/aam_obese.png", aam_obese_plot, width=8, height=6)
+
+# Combine all plots into one figure
+combined_plot <- ggarrange(afr_lean_plot, afr_over_plot, afr_obese_plot, 
+                         aam_lean_plot, aam_over_plot, aam_obese_plot,
+                         ncol=2, nrow=3,
+                         common.legend = TRUE)
+
+# Save the combined plot
+ggsave("plots/combined_composition_plots.png", 
+       combined_plot, 
+       width=16, 
+       height=18)
 
